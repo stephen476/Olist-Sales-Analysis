@@ -190,7 +190,7 @@ LOAD DATA LOCAL INFILE 'C:/Users/gigam/Documents/mysql ecommerce datasets/olist_
 FIELDS TERMINATED BY ','
 IGNORE 1 LINES; -- load data from excel file into customers table
 
--- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 code for insights laid out in order they were mentioned
 
