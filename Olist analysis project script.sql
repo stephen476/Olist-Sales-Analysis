@@ -510,14 +510,14 @@ SELECT customer_state,
  GROUP BY customer_state; -- total orders and sum price per state
  
 WITH monthly_orders AS (SELECT LEFT(order_purchase_timestamp, 4) AS Year,
-						       SUBSTR(order_purchase_timestamp, 6, 2) AS Month,
-							   COUNT(orders.order_id) AS orders
+			       SUBSTR(order_purchase_timestamp, 6, 2) AS Month,
+                   	       COUNT(orders.order_id) AS orders
                           FROM ecommerce.order_items
                           LEFT JOIN ecommerce.products
                             ON order_items.product_id = products.product_id
-					      LEFT JOIN orders
+			  LEFT JOIN orders
                             ON order_items.order_id = orders.order_id
-					     GROUP BY Year, Month
+		         GROUP BY Year, Month
                          ORDER BY Year, Month),
    order_difference AS (SELECT Year,
                                Month, 
@@ -528,15 +528,15 @@ WITH monthly_orders AS (SELECT LEFT(order_purchase_timestamp, 4) AS Year,
 SELECT Year, Month, order_growth/LAG(orders) OVER(ORDER BY year)*100 AS Order_Growth FROM order_difference; -- monthly orders by year
 
 WITH monthly_sales AS (SELECT LEFT(order_purchase_timestamp, 4) AS Year,
-							  SUBSTR(order_purchase_timestamp, 6, 2) AS Month,
-							  SUM(price) AS sum_price
-						 FROM ecommerce.order_items
-						 LEFT JOIN ecommerce.products
-						   ON order_items.product_id = products.product_id
-						 LEFT JOIN orders
-						   ON order_items.order_id = orders.order_id
-					    GROUP BY Year, Month
-					    ORDER BY Year, Month),
+			      SUBSTR(order_purchase_timestamp, 6, 2) AS Month,
+			      SUM(price) AS sum_price
+			 FROM ecommerce.order_items
+			 LEFT JOIN ecommerce.products
+			   ON order_items.product_id = products.product_id
+			 LEFT JOIN orders
+			   ON order_items.order_id = orders.order_id
+		        GROUP BY Year, Month
+		        ORDER BY Year, Month),
   sales_difference AS (SELECT Year,
                               Month, 
                               sum_price,
@@ -546,20 +546,20 @@ WITH monthly_sales AS (SELECT LEFT(order_purchase_timestamp, 4) AS Year,
 SELECT Year, Month, sales_growth/LAG(sum_price) OVER(ORDER BY year)*100 AS Sales_Growth FROM sales_difference; -- monthly sales by year
 
 WITH monthly_orders_and_sales AS (SELECT LEFT(order_purchase_timestamp, 4) AS Year,
-								  SUBSTR(order_purchase_timestamp, 6, 2) AS Month,
-							      COUNT(orders.order_id) AS orders,
-                                  SUM(price) AS sum_price
-                             FROM ecommerce.order_items
-                             LEFT JOIN ecommerce.products
-                               ON order_items.product_id = products.product_id
-							 LEFT JOIN orders
-                               ON order_items.order_id = orders.order_id
-					        GROUP BY Year, Month
-                           ORDER BY Year, Month),
+				         SUBSTR(order_purchase_timestamp, 6, 2) AS Month,
+				         COUNT(orders.order_id) AS orders,
+                                         SUM(price) AS sum_price
+                                    FROM ecommerce.order_items
+                                    LEFT JOIN ecommerce.products
+                                      ON order_items.product_id = products.product_id
+				    LEFT JOIN orders
+                                      ON order_items.order_id = orders.order_id
+			           GROUP BY Year, Month
+                                   ORDER BY Year, Month),
    monthly_aov AS (SELECT Year,
-						  Month,
-						  sum_price/orders AS aov 
-					 FROM monthly_orders_and_sales),
+			  Month,
+	                  sum_price/orders AS aov 
+		     FROM monthly_orders_and_sales),
 aov_difference AS (SELECT year,
                           month, 
                           aov, 
